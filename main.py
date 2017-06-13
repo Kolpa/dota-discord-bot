@@ -2,6 +2,7 @@ import logging
 
 import asyncio
 
+import SvenReplacer
 from discord import ChannelType, Embed
 from discord.ext import commands
 
@@ -30,7 +31,7 @@ async def say_patch(file, heroes):
                         msg += '    {} was added with value {}\n'.format(change.stat, change.new)
                     if change.changetype == Type.CHANGED_PROPERTY:
                         msg += '    {} was change from {} to {}\n'.format(change.stat, change.old, change.new)
-
+                        msg = SvenReplacer.Patchnote_replace(msg)
                 await client.send_message(channel, msg[:-1])
 
 
