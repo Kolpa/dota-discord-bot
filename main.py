@@ -3,7 +3,7 @@ import logging
 import asyncio
 
 import SvenReplacer
-from discord import ChannelType, Embed
+from discord import File, TextChannel, Embed
 from discord.ext import commands
 
 from modules.github.hero import Type
@@ -21,7 +21,7 @@ poller = Dota2Comparator(loop)
 async def say_patch(file, heroes):
     for channel in client.get_all_channels():
 
-        if channel.type == ChannelType.text:
+        if isinstance(channel, TextChannel):
             for hero in heroes:
 
                 msg = 'Changes For {}: \n'.format(hero.name)
@@ -31,8 +31,8 @@ async def say_patch(file, heroes):
                         msg += '    {} was added with value {}\n'.format(change.stat, change.new)
                     if change.changetype == Type.CHANGED_PROPERTY:
                         msg += '    {} was change from {} to {}\n'.format(change.stat, change.old, change.new)
-                        msg = SvenReplacer.Patchnote_replace(msg)
-                await client.send_message(channel, msg[:-1])
+                        msg = SvenReplacer.SvenReplacer.Patchnote_replace(msg)
+                await channel.send(msg[:-1])
 
 
 poller.on_message += say_patch
@@ -47,17 +47,12 @@ async def on_ready():
     poller.start()
 
 
-@client.command(pass_context=True)
+@client.command()
 async def game(ctx, matchid: str):
-    await client.send_typing(ctx.message.channel)
-    url = await game_info.get_info_for_match(matchid)
-    await client.send_file(ctx.message.channel, url)
-
-
-@client.event
-async def on_reaction_add(reaction, user):
-    print(reaction, user)
-    await client.remove_reaction(reaction.message, reaction.emoji, user)
-
+    async with ctx.typing():
+        data = await game_info.get_info_for_match(matchid)
+        items = await game_info.make_item_anim(data)
+        gpm = await game_info.make_xp_gold_anim(data)
+        await ctx.send('Match ' + matchid, files=[File(gpm), File(items)])
 
 client.run('***REMOVED***')
