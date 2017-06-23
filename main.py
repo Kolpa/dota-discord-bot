@@ -17,6 +17,8 @@ loop = asyncio.get_event_loop()
 client = commands.Bot(loop=loop, command_prefix='!', description='a dota2 info bot')
 poller = Dota2Comparator(loop)
 
+Voice_bot.VoiceBot.voice = None
+
 
 async def say_patch(file, heroes):
     for channel in client.get_all_channels():
