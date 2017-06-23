@@ -54,5 +54,50 @@ async def game(ctx, matchid: str):
         items = await game_info.make_item_anim(data)
         gpm = await game_info.make_xp_gold_anim(data)
         await ctx.send('Match ' + matchid, files=[File(gpm), File(items)])
+        
+#Ansager für Voicechannel beitritt        
+@client.event
+async def on_voice_state_update(member, before, after):
+    if Voice_bot.VoiceBot.voice is None:
+        channel = client.get_channel(211042061959299072)
+        Voice_bot.VoiceBot.voice = await channel.connect()
+    before = str(before)
+    after = str(after)
+    print(before)
+    print(after)
+    name = member.nick
+
+    if member.nick == None:
+        name = str(member)
+        name = name.replace('#', ' ')
+        words = name.split()
+        name = name.replace(words[-1], ' ')
+
+    if before.__contains__('channel=None'):
+        text_to_speech = gTTS(text=name + "hat den channel betreten.", lang='de', slow=False)  # text to speech
+        text_to_speech.save("member.mp3")  # test
+        print(name + 'betreten')  # console debug
+        audio = discord.FFmpegPCMAudio("member.mp3")
+        Voice_bot.VoiceBot.voice.play(audio)
+
+    if after.__contains__('channel=None'):
+
+        text_to_speech = gTTS(text=name + "hat den channel verlassen.", lang='de', slow=False)  # text to speech
+        text_to_speech.save("member.mp3")  # test
+        print(name + 'verlassen')  # console debug
+        audio = discord.FFmpegPCMAudio("member.mp3")
+        Voice_bot.VoiceBot.voice.play(audio)
+        
+    #Channel wechseln benötigt logik überarbeitung
+
+    # if not after.__contains__('channel=None') and not before.__contains__('channel=None') and not after.__contains__('name=Eingangshalle'):
+    #     text_to_speech = gTTS(text=name + "hat den channel gewechselt.", lang='de', slow=False)  # text to speech
+    #     text_to_speech.save("member.mp3")  # test
+    #     if not after.__contains__('self_deaf=True') and not after.__contains__('self_mute=True'):
+    #         if not before.__contains__('self_deaf=False') and not before.__contains__('self_mute=False'):
+    #             print(name + 'gewechselt')  # console debug
+    #             audio = discord.FFmpegPCMAudio("member.mp3")
+    #             Voice_bot.VoiceBot.voice.play(audio)
+
 
 client.run('***REMOVED***')
