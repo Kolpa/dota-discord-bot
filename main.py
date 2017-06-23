@@ -2,6 +2,9 @@ import logging
 
 import asyncio
 
+import Voice_bot
+from gtts import gTTS
+
 import SvenReplacer
 from discord import File, TextChannel, Embed
 from discord.ext import commands
