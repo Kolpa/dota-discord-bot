@@ -66,13 +66,16 @@ async def on_voice_state_update(member, before, after):
     if Voice_bot.VoiceBot.voice is None:
         channel = client.get_channel(211042061959299072)
         Voice_bot.VoiceBot.voice = await channel.connect()
-    before = str(before)
-    after = str(after)
+
     print(before)
     print(after)
+    before = str(before)
+    bef = before.split()
+    after = str(after)
+    aft = after.split()
     name = member.nick
 
-    if member.nick == None:
+    if member.nick is None:         #entfernt die ID nummer in der Ansage wenn kein nickname gesetzt ist
         name = str(member)
         name = name.replace('#', ' ')
         words = name.split()
@@ -82,27 +85,25 @@ async def on_voice_state_update(member, before, after):
         text_to_speech = gTTS(text=name + "hat den channel betreten.", lang='de', slow=False)  # text to speech
         text_to_speech.save("member.mp3")  # test
         print(name + 'betreten')  # console debug
-        audio = discord.FFmpegPCMAudio("member.mp3")
-        Voice_bot.VoiceBot.voice.play(audio)
+        play_voicestate()
 
     if after.__contains__('channel=None'):
-
         text_to_speech = gTTS(text=name + "hat den channel verlassen.", lang='de', slow=False)  # text to speech
         text_to_speech.save("member.mp3")  # test
         print(name + 'verlassen')  # console debug
-        audio = discord.FFmpegPCMAudio("member.mp3")
-        Voice_bot.VoiceBot.voice.play(audio)
-        
-    #Channel wechseln benötigt logik überarbeitung
+        play_voicestate()
 
-    # if not after.__contains__('channel=None') and not before.__contains__('channel=None') and not after.__contains__('name=Eingangshalle'):
-    #     text_to_speech = gTTS(text=name + "hat den channel gewechselt.", lang='de', slow=False)  # text to speech
-    #     text_to_speech.save("member.mp3")  # test
-    #     if not after.__contains__('self_deaf=True') and not after.__contains__('self_mute=True'):
-    #         if not before.__contains__('self_deaf=False') and not before.__contains__('self_mute=False'):
-    #             print(name + 'gewechselt')  # console debug
-    #             audio = discord.FFmpegPCMAudio("member.mp3")
-    #             Voice_bot.VoiceBot.voice.play(audio)
+    #Channel wechseln
+    if after.count(' ') == 6:
+        if not aft[6] == bef[6] and not aft[6] == 'name=None' and not bef[6] == 'name=None':
+            text_to_speech = gTTS(text=name + "hat den channel gewechselt.", lang='de', slow=False)  # text to speech
+            text_to_speech.save("member.mp3")  # test
+            print(name + 'gewechselt')  # console debug
+            play_voicestate()
 
+           
+def play_voicestate():
+    audio = discord.FFmpegPCMAudio("member.mp3")
+    Voice_bot.VoiceBot.voice.play(audio)
 
 client.run('***REMOVED***')
