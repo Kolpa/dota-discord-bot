@@ -6,7 +6,7 @@ import Voice_bot
 from gtts import gTTS
 
 import SvenReplacer
-from discord import File, TextChannel, Embed
+from discord import File, TextChannel, FFmpegPCMAudio
 from discord.ext import commands
 
 from modules.github.hero import Type
@@ -103,7 +103,7 @@ async def on_voice_state_update(member, before, after):
 
            
 def play_voicestate():
-    audio = discord.FFmpegPCMAudio("member.mp3")
+    audio = FFmpegPCMAudio("member.mp3")
     Voice_bot.VoiceBot.voice.play(audio)
 
-client.run('***REMOVED***')
+client.run('MjQzNDQ3MjM4MDk1Nzk4Mjc0.DA9JOA.F3mT67ZeQ_Pj80MaQPv2vtHwRPs')
